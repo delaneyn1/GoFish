@@ -1,0 +1,38 @@
+FROM alpine:3.18
+
+# Set kubectl version
+ARG KUBECTL_VERSION=v1.27.4
+
+# Set environment variables
+ENV KUBE_LATEST_VERSION="$KUBECTL_VERSION"
+
+# Install required packages
+RUN apk add --update --no-cache \
+    bash \
+    curl \
+    jq \
+    ca-certificates \
+    && rm -rf /var/cache/apk/*
+
+# Install kubectl
+RUN curl -L https://storage.googleapis.com/kubernetes-release/release/${KUBE_LATEST_VERSION}/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl \
+    && chmod +x /usr/local/bin/kubectl
+
+# Create directory for scripts and workdir
+RUN mkdir -p /scripts /workdir
+
+# Copy kubectl PVC applier script
+COPY kubectl_pvc_applier.sh /scripts/
+RUN chmod +x /scripts/kubectl_pvc_applier.sh
+
+# Set working directory
+WORKDIR /workdir
+
+# Create volume mount point for PVC
+VOLUME ["/mnt/pvc"]
+
+# Set entrypoint to the script
+ENTRYPOINT ["/scripts/kubectl_pvc_applier.sh"]
+
+# Default command (can be overridden)
+CMD ["--help"]
