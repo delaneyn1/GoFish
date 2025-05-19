@@ -22,8 +22,8 @@ RUN curl -L https://storage.googleapis.com/kubernetes-release/release/${KUBE_LAT
 RUN mkdir -p /scripts /workdir
 
 # Copy kubectl PVC applier script
-COPY kubectl_pvc_applier.sh /scripts/
-RUN chmod +x /scripts/kubectl_pvc_applier.sh
+# COPY kubectl_pvc_applier.sh /scripts/
+# RUN chmod +x /scripts/kubectl_pvc_applier.sh
 
 # Set working directory
 WORKDIR /workdir
